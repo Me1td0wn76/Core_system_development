@@ -188,3 +188,34 @@ npm run dev
 キーボードを叩きすぎて指が筋トレ状態です...  
   
 以上、YAMA でした。
+
+---
+
+## Dockerでの起動
+
+### バックエンド（Spring Boot）
+
+1. JARファイルをビルドします（初回のみ）:
+
+    ```sh
+    cd backend/coresystem
+    mvn clean package -DskipTests
+    ```
+
+2. Dockerイメージをビルドします:
+
+    ```sh
+    docker build -t coresystem-backend .
+    ```
+
+3. コンテナを起動します:
+
+    ```sh
+    docker run -p 8080:8080 coresystem-backend
+    ```
+
+### フロントエンド（React）
+
+> ※フロントエンドもDocker化したい場合は、`frontend/coresystemR`にDockerfileを作成し、同様にビルド・起動できます。
+
+---

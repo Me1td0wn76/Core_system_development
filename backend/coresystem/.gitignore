@@ -40,20 +40,24 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-# ビルド成果物
+# ビルド成果物・一時ファイル
 /target/
 build/
 out/
 
-# IDE関連
-*.iml
+# IDE・エディタ関連
 .idea/
+*.iml
 *.ipr
 *.iws
 .project
 .classpath
 .settings/
 .factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+.vscode/
 
 # OSごとの不要ファイル
 .DS_Store
@@ -62,9 +66,19 @@ Thumbs.db
 # ログ・一時ファイル
 *.log
 
-# 環境変数や設定ファイル
+# 環境変数や機密情報（絶対にGitHubに上げてはならないもの）
 .env
 *.env
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+secrets.*
+secret.*
+config/*.secret.*
+config/*.env
 application-local.properties
 application-*.yml
 application-*.yaml

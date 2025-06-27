@@ -7,12 +7,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# node_modulesやビルド成果物
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# 秘密情報・認証情報（絶対にGitHubに上げてはならないもの）
+.env
+*.env
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+secrets.*
+secret.*
+config/*.secret.*
+config/*.env
+
+# エディタ・IDE関連
 .vscode/*
 !.vscode/extensions.json
 .idea
