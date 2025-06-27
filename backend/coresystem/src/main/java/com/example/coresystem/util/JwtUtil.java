@@ -7,7 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
-    private static final String SECRET = System.getenv("JWT_SECRET_KEY"); // 実運用ではenv変数で管理
+    private static final String SECRET = "testsecret"; // 一時的に固定値
     private static final long EXPIRATION = 1000 * 60 * 60; // 1時間
 
     public static String generateToken(String username) {

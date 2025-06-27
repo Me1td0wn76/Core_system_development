@@ -14,22 +14,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/hello").authenticated()
-                .anyRequest().permitAll()
-            )
-            .httpBasic(org.springframework.security.config.Customizer.withDefaults());
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .xssProtection(xss -> xss.disable()) // X-XSS-Protectionヘッダーを無効化
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
         return http.build();
     }
 
     @Bean
     public UserDetailsService users() {
         return new InMemoryUserDetailsManager(
-            User.withUsername("root")
-                .password("{noop}admin") // パスワードは「admin」
-                .roles("ADMIN")
-                .build()
-        );
+                User.withUsername("root")
+                        .password("{noop}admin") // パスワードは「admin」
+                        .roles("ADMIN")
+                        .build());
     }
 }

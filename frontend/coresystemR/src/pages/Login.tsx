@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   username: string;
@@ -11,6 +12,7 @@ function Login() {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<User>({ username: '', password: '' });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,10 +25,11 @@ function Login() {
     }).then(res => {
       setUser({ username: res.data.username });
       setLoading(false);
+      navigate('/dashboard'); // すでにログイン済みならダッシュボードへ
     }).catch(() => {
       setLoading(false);
     });
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -39,6 +42,7 @@ function Login() {
       const res = await axios.post<{ token: string }>('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       setUser({ username: form.username });
+      navigate('/dashboard'); // ログイン成功時にダッシュボードへ遷移
     } catch {
       setError('ログイン失敗');
     }
@@ -63,12 +67,8 @@ function Login() {
     );
   }
 
-  return (
-    <div>
-      <h2>ダッシュボード</h2>
-      <p>ようこそ、{user.username}さん</p>
-    </div>
-  );
+  // ここでダッシュボードにリダイレクトしているので、userがあれば何も表示しなくてOK
+  return null;
 }
 
 export default Login;
