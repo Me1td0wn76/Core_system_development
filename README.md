@@ -204,7 +204,7 @@ npm run dev
 ![Login Screen](docs/screenshots/login.png)
 
 - ダッシュボード画面
-![Dashboard Screen](docs/screenshots/dashboard.png)
+![Dashboard Screen](docs/screenshots/dashboards.png)
 
 ---
 
