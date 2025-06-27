@@ -212,7 +212,7 @@ npm run dev
 
 このアプリケーションは、以下の環境で動作確認されています。
 
-- OS: Windows 10, macOS Monterey, Ubuntu 20.04
+- OS: Windows 11 home edition, macOS Monterey, Ubuntu 20.04
 - ブラウザ: Chrome, Firefox, Safari, Edge
 - Java: OpenJDK 17
 - Node.js: 16.x
