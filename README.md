@@ -89,13 +89,13 @@ npm run dev
 
 ## お問い合わせ
 
-問題や質問がある場合は、[Issues](https://github.com/your-repo/issues)に投稿してください。
+問題や質問がある場合は、[Issues](https://github.com/https://github.com/Me1td0wn76/Core_system_development?tab=readme-ov-file/issues)に投稿してください。
 
 ---
 
 ## コントリビュート
 
-コントリビュートは大歓迎です！プルリクエストを作成する前に、必ず`CONTRIBUTING.md`をお読みください。
+コントリビュートは大歓迎です！プルリクエストを作成する前に、必ず[CONTRIBUTING.md](CONTRIBUTING.md)をお読みください。
 
 ---
 
@@ -371,7 +371,7 @@ npm run build
 
 ## コントリビュート
 
-コントリビュートは大歓迎です！プルリクエストを作成する前に、必ず`CONTRIBUTING.md`をお読みください。
+コントリビュートは大歓迎です！プルリクエストを作成する前に、必ず[CONTRIBUTING.md](CONTRIBUTING.md)をお読みください。
 
 ---
 
