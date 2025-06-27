@@ -89,7 +89,7 @@ npm run dev
 
 ## お問い合わせ
 
-問題や質問がある場合は、[Issues](https://github.com/https://github.com/Me1td0wn76/Core_system_development?tab=readme-ov-file/issues)に投稿してください。
+問題や質問がある場合は、[Issues](https://github.com/Me1td0wn76/Core_system_development?tab=readme-ov-file/issues)に投稿してください。
 
 ---
 
