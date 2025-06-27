@@ -18,7 +18,7 @@ import com.example.coresystem.util.JwtUtil;
 public class AuthController {
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody AuthUser user) {
         if ("admin".equals(user.getUsername()) && "password".equals(user.getPassword())) {
             String token = JwtUtil.generateToken(user.getUsername());
             return ResponseEntity.ok(Map.of("token", token));
@@ -41,8 +41,8 @@ public class AuthController {
         }
     }
 
-    // シンプルなUserクラス（本来は別ファイル推奨）
-    public static class User {
+    // シンプルなAuthUserクラス（本来は別ファイル推奨）
+    public static class AuthUser {
         private String username;
         private String password;
 
