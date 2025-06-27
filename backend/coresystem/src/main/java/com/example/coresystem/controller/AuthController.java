@@ -19,7 +19,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthUser user) {
-        if ("admin".equals(user.getUsername()) && "password".equals(user.getPassword())) {
+        if ("root".equals(user.getUsername()) && "admin".equals(user.getPassword())) {
             String token = JwtUtil.generateToken(user.getUsername());
             return ResponseEntity.ok(Map.of("token", token));
         }

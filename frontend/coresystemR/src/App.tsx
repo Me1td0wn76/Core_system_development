@@ -1,12 +1,12 @@
-import Dashboard from './pages/Dashboard'
-import './App.css'
+import Login from './pages/Login';
+import './App.css';
 
 function App() {
   return (
     <div>
-      <Dashboard />
+      <Login />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
