@@ -51,18 +51,36 @@ function Login() {
   if (loading) return <p>読み込み中...</p>;
   if (!user) {
     return (
-      <div>
-        <h2>ログイン</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>ユーザー名: <input name="username" value={form.username} onChange={handleChange} /></label>
-          </div>
-          <div>
-            <label>パスワード: <input name="password" type="password" value={form.password} onChange={handleChange} /></label>
-          </div>
-          <button type="submit">ログイン</button>
-        </form>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'inherit'
+      }}>
+        <div style={{
+          background: '#222',
+          padding: '32px 40px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+          minWidth: '320px'
+        }}>
+          <h2 style={{ textAlign: 'center', marginBottom: '24px', color: '#fff' }}>ログイン</h2>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ color: '#fff' }}>
+                ユーザー名: <input name="username" value={form.username} onChange={handleChange} style={{ width: '100%' }} />
+              </label>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ color: '#fff' }}>
+                パスワード: <input name="password" type="password" value={form.password} onChange={handleChange} style={{ width: '100%' }} />
+              </label>
+            </div>
+            <button type="submit" style={{ width: '100%', padding: '8px 0' }}>ログイン</button>
+          </form>
+          {error && <p style={{ color: 'red', marginTop: '12px', textAlign: 'center' }}>{error}</p>}
+        </div>
       </div>
     );
   }
