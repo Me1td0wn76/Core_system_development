@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.coresystem.util.JwtUtil;
+import com.example.coresystem.model.AuthUser;
+import com.example.coresystem.util.JwtUtil; // 追加
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,28 +39,6 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("username", username));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
-    // シンプルなAuthUserクラス（本来は別ファイル推奨）
-    public static class AuthUser {
-        private String username;
-        private String password;
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
         }
     }
 }
