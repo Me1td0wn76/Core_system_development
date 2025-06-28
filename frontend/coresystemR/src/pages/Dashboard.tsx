@@ -7,10 +7,12 @@ function Dashboard() {
     localStorage.removeItem('token');
     navigate('/'); // ログイン画面（ルート）に戻る
   };
-
+//ユーザ名を表示
   return (
     <div style={{ padding: '20px' }}>
       <h2>ダッシュボード</h2>
+      <p>ようこそ、{localStorage.getItem('username') || 'ユーザー'}さん！</p>
+      <p>ここから各種管理機能にアクセスできます。</p>
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
         <button onClick={() => navigate('/sales')}>売上管理へ</button>
         <button onClick={() => navigate('/inventory')}>在庫管理へ</button>
