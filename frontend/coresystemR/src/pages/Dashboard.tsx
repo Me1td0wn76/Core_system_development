@@ -1,18 +1,32 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-
-type Notification = {
-  type: 'info' | 'warning' | 'success' | 'error';
-  message: string;
-  read?: boolean;
-};
+import { useNavigate } from 'react-router-dom';
 
 const TABS = ['all', 'info', 'warning', 'error', 'success'] as const;
 type TabType = typeof TABS[number];
 
+type Notification = {
+  type: 'info' | 'warning' | 'success' | 'error';
+  message: string;
+  link?: string; // 追加: 通知クリックで遷移するパス
+  read?: boolean;
+};
+
+type Transaction = {
+  id: number;
+  detail: string;
+  date: string;
+  amount: string;
+};
+
 function Dashboard() {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [tab, setTab] = useState<TabType>('all');
+  const [transactions, setTransactions] = useState<Transaction[]>([
+    { id: 1, detail: '売上登録', date: '2025-06-28 10:00', amount: '¥10,000' },
+    { id: 2, detail: '在庫補充', date: '2025-06-28 11:00', amount: '¥5,000' }
+  ]);
   const intervalRef = useRef<number | null>(null);
 
   // 通知取得
@@ -35,6 +49,19 @@ function Dashboard() {
     setNotifications(notifications =>
       notifications.map((n, i) => i === idx ? { ...n, read: true } : n)
     );
+  };
+
+  // 通知削除
+  const handleDelete = (idx: number) => {
+    setNotifications(notifications => notifications.filter((_, i) => i !== idx));
+  };
+
+  // 通知クリックで画面遷移
+  const handleNotificationClick = (n: Notification, idx: number) => {
+    handleRead(idx);
+    if (n.link) {
+      navigate(n.link);
+    }
   };
 
   // タブ切替
@@ -60,7 +87,7 @@ function Dashboard() {
       <div style={{
         background: '#fff',
         borderRadius: 8,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        boxShadow: '0 2px 8px rgba(3, 3, 3, 0.08)',
         marginBottom: 24,
         padding: 24
       }}>
@@ -89,7 +116,6 @@ function Dashboard() {
           {filtered.map((n, i) => (
             <li
               key={i}
-              onClick={() => handleRead(i)}
               style={{
                 background: n.read ? '#f5f5f5' : '#fff',
                 borderLeft: `8px solid ${getColor(n.type)}`,
@@ -97,27 +123,125 @@ function Dashboard() {
                 padding: '8px 16px',
                 borderRadius: '4px',
                 boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                color: n.read ? '#aaa' : '#222', // 通知の文字色を黒に
+                color: n.read ? '#aaa' : '#222', // ここで黒文字
                 fontWeight: n.type === 'error' || n.type === 'warning' ? 'bold' : 'normal',
                 opacity: n.read ? 0.5 : 1,
-                cursor: 'pointer',
-                transition: 'opacity 0.2s'
+                cursor: n.link ? 'pointer' : 'default',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
-              title="クリックで既読"
             >
-              {n.message}
+              <span
+                onClick={() => handleNotificationClick(n, i)}
+                style={{ flex: 1 }}
+                title={n.link ? "クリックで詳細へ" : ""}
+              >
+                {n.message}
+              </span>
+              <button
+                onClick={() => handleDelete(i)}
+                style={{
+                  marginLeft: 12,
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#888',
+                  fontSize: '1.2em',
+                  cursor: 'pointer'
+                }}
+                title="通知を削除"
+              >
+                ×
+              </button>
             </li>
           ))}
         </ul>
       </div>
-      {/* 管理ページへの遷移ボタン */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
-        <button onClick={() => window.location.href = '/sales'}>売上管理へ</button>
-        <button onClick={() => window.location.href = '/inventory'}>在庫管理へ</button>
-        <button onClick={() => window.location.href = '/customers'}>顧客管理へ</button>
+      {/* トランザクション一覧カード */}
+      <div style={{
+        background: '#fff',
+        borderRadius: 8,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        marginBottom: 24,
+        padding: 24
+      }}>
+        <h3 style={{ color: '#222' }}>トランザクション一覧</h3>
+        <table
+          border={1}
+          cellPadding={8}
+          style={{
+            width: '100%',
+            background: '#fafafa',
+            color: '#222' // ここを追加
+          }}
+        >
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>内容</th>
+              <th>日時</th>
+              <th>金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map(tx => (
+              <tr key={tx.id}>
+                <td>{tx.id}</td>
+                <td>{tx.detail}</td>
+                <td>{tx.date}</td>
+                <td>{tx.amount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      {/* ここにグラフや履歴など他のカードを追加 */}
-      {/* ... */}
+      {/* ナビゲーションボタン */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginRight: '12px'
+          }}
+          onClick={() => navigate('/sales')}
+        >
+          売上管理へ
+        </button>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginRight: '12px'
+          }}
+          onClick={() => navigate('/inventory')}
+        >
+          在庫管理へ
+        </button>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onClick={() => navigate('/customers')}
+        >
+          顧客管理へ
+        </button>
+      </div>
     </div>
   );
 }
