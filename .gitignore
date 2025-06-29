@@ -1,5 +1,7 @@
 # 共通でGitHubに絶対上げてはならないもの（全体適用）
 .env
+.env.*
+!.env.template
 *.env
 *.key
 *.pem
@@ -11,6 +13,36 @@ secrets.*
 secret.*
 config/*.secret.*
 config/*.env
+
+# データベース関連
+db.properties
+database.properties
+datasource.properties
+
+# AWS/クラウド認証情報
+.aws/
+aws-credentials
+credentials
+*.credentials
+
+# API Keys
+api-keys.*
+tokens.*
+*-api-key.txt
+*-token.txt
+
+# SSL証明書
+*.crt
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+# 本番環境設定
+application-prod.properties
+application-staging.properties
+application-test.properties
 
 # OSごとの不要ファイル
 .DS_Store

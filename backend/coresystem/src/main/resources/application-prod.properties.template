@@ -1,0 +1,23 @@
+# Production Configuration Template
+# Copy this to application-prod.properties and fill in actual values
+# DO NOT commit application-prod.properties to Git!
+
+spring.application.name=coresystem
+
+# Database Configuration - Replace with actual production values
+spring.datasource.url=jdbc:mariadb://your-production-db-host:3306/your-production-db-name
+spring.datasource.username=your-production-username
+spring.datasource.password=your-production-password
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+
+# JPA Configuration for Production
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
+
+# JWT Secret - Generate a strong random secret for production
+jwt.secret=generate-a-strong-random-secret-for-production
+
+# Security Settings
+server.ssl.enabled=true
+# Add SSL certificate configuration here
