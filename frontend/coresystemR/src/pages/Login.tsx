@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { setUserRole } from '../utils/auth';
 
 type User = {
   username: string;
   password?: string;
+  role?: string;
 };
 
 function Login() {
@@ -20,10 +22,11 @@ function Login() {
       setLoading(false);
       return;
     }
-    axios.get<{ username: string }>('http://localhost:8080/api/auth/me', {
+    axios.get<{ username: string; role: string }>('http://localhost:8080/api/auth/me', {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
-      setUser({ username: res.data.username });
+      setUser({ username: res.data.username, role: res.data.role });
+      setUserRole(res.data.role as 'admin' | 'staff');
       setLoading(false);
       navigate('/dashboard'); // すでにログイン済みならダッシュボードへ
     }).catch(() => {
@@ -39,13 +42,41 @@ function Login() {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post<{ token: string }>('http://localhost:8080/api/auth/login', form);
+      const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
-      setUser({ username: form.username });
+      localStorage.setItem('username', res.data.username);
+      setUserRole(res.data.role as 'admin' | 'staff');
+      setUser({ username: res.data.username, role: res.data.role });
       navigate('/dashboard'); // ログイン成功時にダッシュボードへ遷移
-    } catch {
-      setError('ログイン失敗');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      if (err.response?.status === 401) {
+        setError('ユーザー名またはパスワードが間違っています');
+      } else if (err.response?.data?.error) {
+        setError(`ログイン失敗: ${err.response.data.error}`);
+      } else {
+        setError('ログイン失敗: サーバーエラーが発生しました');
+      }
     }
+  };
+
+  // ワンクリックログイン用の関数
+  const quickLogin = (username: string, password: string) => {
+    setForm({ username, password });
+    // フォームを設定した後、ログインを実行
+    setTimeout(async () => {
+      try {
+        const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', { username, password });
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('username', res.data.username);
+        setUserRole(res.data.role as 'admin' | 'staff');
+        setUser({ username: res.data.username, role: res.data.role });
+        navigate('/dashboard');
+      } catch (err: any) {
+        console.error('Quick login error:', err);
+        setError('ワンクリックログインに失敗しました');
+      }
+    }, 100);
   };
 
   if (loading) return <p>読み込み中...</p>;
@@ -66,6 +97,66 @@ function Login() {
           minWidth: '320px'
         }}>
           <h2 style={{ textAlign: 'center', marginBottom: '24px', color: '#fff' }}>ログイン</h2>
+          
+          {/* テストアカウント情報 */}
+          <div style={{ 
+            background: '#333', 
+            padding: '12px', 
+            borderRadius: '4px', 
+            marginBottom: '16px',
+            fontSize: '12px',
+            color: '#ccc'
+          }}>
+            <strong style={{ color: '#fff' }}>テストアカウント:</strong><br/>
+            <div style={{ display: 'flex', gap: '4px', marginTop: '8px', flexWrap: 'wrap' }}>
+              <button 
+                type="button"
+                onClick={() => quickLogin('root', 'admin')}
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '10px', 
+                  background: '#4caf50', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+              >
+                root/admin
+              </button>
+              <button 
+                type="button"
+                onClick={() => quickLogin('admin', 'password123')}
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '10px', 
+                  background: '#4caf50', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+              >
+                admin/password123
+              </button>
+              <button 
+                type="button"
+                onClick={() => quickLogin('staff1', 'staff123')}
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '10px', 
+                  background: '#2196f3', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+              >
+                staff1/staff123
+              </button>
+            </div>
+          </div>
+          
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ color: '#fff' }}>
