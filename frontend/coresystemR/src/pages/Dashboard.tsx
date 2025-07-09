@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { handleLogout, isAuthenticated, handleAuthError, getCurrentUserRole } from '../utils/auth';
+import { RoleBadge, PermissionButton } from '../components/PermissionGuard';
 
 const TABS = ['all', 'info', 'warning', 'error', 'success'] as const;
 type TabType = typeof TABS[number];
@@ -40,12 +42,33 @@ function Dashboard() {
 
   // 通知取得
   const fetchNotifications = () => {
-    axios.get<Notification[]>('http://localhost:8080/api/notifications')
+    if (!isAuthenticated()) {
+      handleLogout(navigate);
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    axios.get<Notification[]>('http://localhost:8080/api/notifications', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => setNotifications(res.data.map(n => ({ ...n, read: false }))))
-      .catch(() => setNotifications([{ type: 'error', message: '通知の取得に失敗しました', read: false }]));
+      .catch((error) => {
+        if (error.response?.status === 401) {
+          // 認証エラーの場合
+          handleAuthError(navigate);
+        } else {
+          setNotifications([{ type: 'error', message: '通知の取得に失敗しました', read: false }]);
+        }
+      });
   };
 
   useEffect(() => {
+    // 初回ロード時に認証チェック
+    if (!isAuthenticated()) {
+      handleLogout(navigate);
+      return;
+    }
+
     fetchNotifications();
     intervalRef.current = setInterval(fetchNotifications, 30000);
     return () => {
@@ -91,7 +114,46 @@ function Dashboard() {
 
   return (
     <div style={{ padding: '20px', maxWidth: 900, margin: '0 auto' }}>
-      <h2>ダッシュボード</h2>
+      {/* ヘッダー */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        borderBottom: '1px solid #eee',
+        paddingBottom: '10px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <h2 style={{ margin: 0, color: '#222' }}>ダッシュボード</h2>
+          <RoleBadge />
+        </div>
+        <button
+          onClick={() => handleLogout(navigate)}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            background: '#fff',
+            color: '#666',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#f5f5f5';
+            e.currentTarget.style.borderColor = '#999';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#fff';
+            e.currentTarget.style.borderColor = '#ccc';
+          }}
+          title="ログアウトしてログイン画面に戻る"
+        >
+          🚪 ログアウト
+        </button>
+      </div>
       {/* 通知カード */}
       <div style={{
         background: '#fff',
@@ -148,7 +210,8 @@ function Dashboard() {
               >
                 {n.message}
               </span>
-              <button
+              <PermissionButton
+                permission="canDelete"
                 onClick={() => handleDelete(i)}
                 style={{
                   marginLeft: 12,
@@ -158,10 +221,9 @@ function Dashboard() {
                   fontSize: '1.2em',
                   cursor: 'pointer'
                 }}
-                title="通知を削除"
               >
                 ×
-              </button>
+              </PermissionButton>
             </li>
           ))}
         </ul>

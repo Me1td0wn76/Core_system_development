@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "user") // テーブル名をsingularに変更
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +17,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String role; // "admin" or "staff"
 
     private String email;
@@ -29,7 +31,26 @@ public class User {
     @Column(name = "active")
     private Integer active; // Boolean から Integer に変更
 
-    // getter/setter
+    // コンストラクタ
+    public User() {
+    }
+
+    public User(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.active = 1; // デフォルトでアクティブ
+    }
+
+    public User(String username, String password, String role, String email) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.active = 1; // デフォルトでアクティブ
+    }
+
+    // Getter and Setter
     public Long getId() {
         return id;
     }
