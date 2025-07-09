@@ -1,11 +1,13 @@
 package com.example.coresystem;
 
-import org.springframework.boot.SpringApplication;
+// Import JwtUtil if it exists in your project
+import com.example.coresystem.util.JwtUtil;
 
 public class TestCoresystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.from(CoresystemApplication::main).with(TestcontainersConfiguration.class).run(args);
+		String token = JwtUtil.generateToken("root", "admin");
+		System.out.println(token);
 	}
 
 }

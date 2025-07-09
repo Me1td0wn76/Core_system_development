@@ -28,6 +28,13 @@ function Dashboard() {
     { id: 2, detail: '在庫補充', date: '2025-06-28 11:00', amount: '¥5,000' }
   ]);
   const intervalRef = useRef<number | null>(null);
+  // 仮のユーザー情報（本来は認証情報やAPIから取得）
+  const [user, setUser] = useState<{ role: string } | null>(null);
+
+  useEffect(() => {
+    // ここで本来はAPIや認証情報からユーザー情報を取得
+    setUser({ role: 'admin' }); // 仮にadminユーザーとしてセット
+  }, []);
 
   // 通知取得
   const fetchNotifications = () => {
@@ -235,11 +242,78 @@ function Dashboard() {
             background: '#8884d8',
             color: '#fff',
             fontWeight: 'bold',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            marginRight: '12px'
           }}
           onClick={() => navigate('/customers')}
         >
           顧客管理へ
+        </button>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginRight: '12px'
+          }}
+          onClick={() => navigate('/history')}
+        >
+          操作履歴へ
+        </button>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginRight: '12px'
+          }}
+          onClick={() => navigate('/orders')}
+        >
+          注文管理へ
+        </button>
+        {user?.role === 'admin' && (
+          <button
+            style={{
+              padding: '8px 24px',
+              borderRadius: '4px',
+              border: 'none',
+              background: '#8884d8',
+              color: '#fff',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              marginRight: '12px'
+            }}
+            onClick={() => navigate('/users')}
+          >
+            ユーザー管理へ
+          </button>
+        )}
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            // ログアウト処理
+            localStorage.removeItem('token');
+            // 必要なら他のセッション情報も削除
+            window.location.href = '/'; // 強制的にログイン画面へ
+          }}
+        >
+          ログアウト
         </button>
       </div>
     </div>

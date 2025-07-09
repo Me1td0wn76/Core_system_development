@@ -25,8 +25,10 @@ function Login() {
     }).then(res => {
       setUser({ username: res.data.username });
       setLoading(false);
-      navigate('/dashboard'); // すでにログイン済みならダッシュボードへ
+      navigate('/dashboard');
     }).catch(() => {
+      // トークンが無効なら消してログイン画面へ
+      localStorage.removeItem('token');
       setLoading(false);
     });
   }, [navigate]);
@@ -42,7 +44,7 @@ function Login() {
       const res = await axios.post<{ token: string }>('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       setUser({ username: form.username });
-      navigate('/dashboard'); // ログイン成功時にダッシュボードへ遷移
+      navigate('/dashboard');
     } catch {
       setError('ログイン失敗');
     }
@@ -85,7 +87,7 @@ function Login() {
     );
   }
 
-  // ここでダッシュボードにリダイレクトしているので、userがあれば何も表示しなくてOK
+  // ログイン済みなら何も表示しない
   return null;
 }
 

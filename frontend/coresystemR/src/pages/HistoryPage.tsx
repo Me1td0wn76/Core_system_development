@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type History = {
   id: number;
@@ -15,10 +16,11 @@ const dummyHistory: History[] = [
 ];
 
 function HistoryPage() {
-  const [history, setHistory] = useState<History[]>(dummyHistory);
+  const [history] = useState<History[]>(dummyHistory);
   const [sortKey, setSortKey] = useState<'date' | 'user' | 'detail'>('date');
   const [sortAsc, setSortAsc] = useState(true);
   const [filter, setFilter] = useState('');
+  const navigate = useNavigate();
 
   const sorted = [...history]
     .filter(h => h.user.includes(filter) || h.detail.includes(filter))
@@ -91,6 +93,22 @@ function HistoryPage() {
           ))}
         </tbody>
       </table>
+      <div style={{ marginTop: 32, textAlign: 'right' }}>
+        <button
+          style={{
+            padding: '8px 24px',
+            borderRadius: '4px',
+            border: 'none',
+            background: '#8884d8',
+            color: '#fff',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onClick={() => navigate('/dashboard')}
+        >
+          ダッシュボードへ戻る
+        </button>
+      </div>
     </div>
   );
 }

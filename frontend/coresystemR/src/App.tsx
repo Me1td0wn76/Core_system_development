@@ -4,9 +4,14 @@ import Dashboard from './pages/Dashboard';
 import SalesPage from './pages/SalesPage';
 import InventoryPage from './pages/InventoryPage';
 import CustomerPage from './pages/CustomerPage';
-import RequireAuth from './components/RequireAuth';
+import HistoryPage from './pages/HistoryPage';
+import OrdersPage from './pages/OrdersPage';
+import UserManagementPage from './pages/UserManagementPage';
+import axios from 'axios';
 
 function App() {
+  axios.get('http://localhost:8080/api/notifications');
+
   return (
     <div
       style={{
@@ -15,32 +20,19 @@ function App() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#222', // 必要に応じて背景色を調整
+        background: '#222',
       }}
     >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          } />
-          <Route path="/sales" element={
-            <RequireAuth>
-              <SalesPage />
-            </RequireAuth>
-          } />
-          <Route path="/inventory" element={
-            <RequireAuth>
-              <InventoryPage />
-            </RequireAuth>
-          } />
-          <Route path="/customers" element={
-            <RequireAuth>
-              <CustomerPage />
-            </RequireAuth>
-          } />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sales" element={<SalesPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/customers" element={<CustomerPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/users" element={<UserManagementPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

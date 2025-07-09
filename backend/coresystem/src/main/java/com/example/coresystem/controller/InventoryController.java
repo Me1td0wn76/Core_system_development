@@ -1,26 +1,29 @@
 package com.example.coresystem.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.example.coresystem.model.Inventory;
+import com.example.coresystem.repository.InventoryRepository;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
+    private final InventoryRepository repo;
+
+    public InventoryController(InventoryRepository repo) {
+        this.repo = repo;
+    }
 
     @GetMapping("/list")
-    public List<Map<String, Object>> getInventoryList() {
-        List<Map<String, Object>> data = new ArrayList<>();
+    public List<Inventory> list() {
+        return repo.findAll();
+    }
 
-        data.add(Map.of("id", 1, "name", "りんご", "stock", 25));
-        data.add(Map.of("id", 2, "name", "バナナ", "stock", 3));
-        data.add(Map.of("id", 3, "name", "みかん", "stock", 0));
-        data.add(Map.of("id", 4, "name", "ぶどう", "stock", 12));
-
-        return data;
+    @PutMapping("/{id}")
+    public Inventory update(@PathVariable Long id, @RequestBody Inventory update) {
+        Inventory inv = repo.findById(id).orElseThrow();
+        inv.setStock(update.getStock());
+        return repo.save(inv);
     }
 }

@@ -11,6 +11,9 @@ secrets.*
 secret.*
 config/*.secret.*
 config/*.env
+application-local.properties
+application-*.yml
+application-*.yaml
 
 # OSごとの不要ファイル
 .DS_Store
@@ -25,6 +28,11 @@ Thumbs.db
 *.iml
 *.ipr
 *.iws
+.settings/
+.factorypath
+.classpath
+.project
+.sts4-cache
 
 # バイナリ・ビルド成果物（全体）
 /dist/
@@ -57,5 +65,4 @@ jacoco.exec
 # その他
 HELP.md
 springBeans
-.sts4-cache
 .apt_generated

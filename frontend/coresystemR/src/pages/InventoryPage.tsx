@@ -10,45 +10,32 @@ type InventoryItem = {
 
 function InventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([]);
-  const [notifications, setNotifications] = useState<{ type: string; message: string }[]>([]);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [editStock, setEditStock] = useState<number>(0);
   const navigate = useNavigate(); // 追加
 
   useEffect(() => {
     axios.get<InventoryItem[]>('http://localhost:8080/api/inventory/list')
       .then(res => setItems(res.data))
       .catch(_err => alert("在庫データの取得に失敗しました"));
-
-    // 在庫通知だけ取得
-    axios.get<{ type: string; message: string }[]>('http://localhost:8080/api/notifications/inventory')
-      .then(res => setNotifications(res.data));
   }, []);
+
+  const handleEdit = (id: number, stock: number) => {
+    setEditId(id);
+    setEditStock(stock);
+  };
+
+  const handleSave = (id: number) => {
+    axios.put(`http://localhost:8080/api/inventory/${id}`, { stock: editStock })
+      .then(() => {
+        setItems(items.map(i => i.id === id ? { ...i, stock: editStock } : i));
+        setEditId(null);
+      });
+  };
 
   return (
     <div style={{ padding: '20px' }}>
       <h2>在庫一覧</h2>
-      {/* 通知欄追加 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3>通知</h3>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {notifications.map((n, i) => (
-            <li
-              key={i}
-              style={{
-                background: '#fff',
-                borderLeft: `8px solid ${n.type === 'warning' ? '#ff9800' : '#888'}`,
-                marginBottom: '8px',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                color: n.type === 'warning' ? '#ff9800' : '#888',
-                fontWeight: n.type === 'warning' ? 'bold' : 'normal'
-              }}
-            >
-              {n.message}
-            </li>
-          ))}
-        </ul>
-      </div>
       <table border={1} cellPadding={10}>
         <thead>
           <tr>
@@ -56,23 +43,42 @@ function InventoryPage() {
             <th>商品名</th>
             <th>在庫数</th>
             <th>状態</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          {items.map(item => {
-            const isLow = item.stock < 5;
+          {items.map(i => {
+            const isLow = i.stock < 5;
             return (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td style={{ color: isLow ? 'red' : 'white' }}>{item.stock}</td>
+              <tr key={i.id}>
+                <td>{i.id}</td>
+                <td>{i.name}</td>
+                <td style={{ color: isLow ? 'red' : 'white' }}>
+                  {editId === i.id ? (
+                    <input
+                      type="number"
+                      value={editStock}
+                      onChange={e => setEditStock(Number(e.target.value))}
+                      style={{ width: '60px' }}
+                    />
+                  ) : (
+                    i.stock
+                  )}
+                </td>
                 <td>{isLow ? '在庫少' : '十分'}</td>
+                <td>
+                  {editId === i.id ? (
+                    <button onClick={() => handleSave(i.id)}>保存</button>
+                  ) : (
+                    <button onClick={() => handleEdit(i.id, i.stock)}>編集</button>
+                  )}
+                </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-       <button
+      <button
         style={{
           marginTop: '24px',
           padding: '8px 24px',

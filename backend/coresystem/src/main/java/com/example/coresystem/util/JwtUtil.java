@@ -1,26 +1,32 @@
 package com.example.coresystem.util;
 
-// util/JwtUtil.java
 import java.util.Date;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
-    private static final String SECRET = "testsecret"; // 一時的に固定値
-    private static final long EXPIRATION = 1000 * 60 * 60; // 1時間
+    private static final String SECRET = "your-very-secret-key-should-be-long-enough";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1時間
 
-    public static String generateToken(String username) {
+    public static String generateToken(String username, String role) {
         return Jwts.builder()
-                .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .claim("username", username)
+                .claim("role", role)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
 
-    public static String validateToken(String token) {
-        return Jwts.parser().setSigningKey(SECRET)
+    public static Claims validateTokenAndGetClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET)
                 .parseClaimsJws(token)
-                .getBody().getSubject();
+                .getBody();
+    }
+
+    public static String getUsername(String token) {
+        return validateTokenAndGetClaims(token).get("username", String.class);
     }
 }

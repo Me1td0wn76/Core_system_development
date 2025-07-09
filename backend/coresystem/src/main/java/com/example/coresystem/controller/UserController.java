@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.coresystem.model.Notification;
-import com.example.coresystem.service.NotificationService;
+import com.example.coresystem.model.User;
+import com.example.coresystem.service.UserService;
 
 @RestController
-@RequestMapping("/api/notifications")
-public class NotificationController {
-    private final NotificationService service;
+@RequestMapping("/api/users")
+public class UserController {
+    private final UserService userService;
 
-    public NotificationController(NotificationService service) {
-        this.service = service;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping
-    public List<Notification> list() {
-        return service.findAll();
+    @GetMapping("/list")
+    public List<User> list() {
+        return userService.findAll();
     }
 
-    @PostMapping
-    public Notification add(@RequestBody Notification notification) {
-        return service.save(notification);
+    @PostMapping("/add")
+    public User add(@RequestBody User user) {
+        return userService.save(user);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        service.delete(id);
+        userService.deleteById(id);
     }
 }
