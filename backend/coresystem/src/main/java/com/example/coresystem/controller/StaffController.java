@@ -76,7 +76,7 @@ public class StaffController {
                 staff.setRole("staff");
             }
             if (staff.getActive() == null) {
-                staff.setActive(true);
+                staff.setActive(1);
             }
 
             User savedStaff = userRepository.save(staff);
@@ -206,7 +206,7 @@ public class StaffController {
                     }
                 }
 
-                staff.setActive(!staff.getActive());
+                staff.setActive(staff.getActive() == 1 ? 0 : 1);
                 User updatedStaff = userRepository.save(staff);
 
                 return ResponseEntity.ok(Map.of(

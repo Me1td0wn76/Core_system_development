@@ -33,4 +33,9 @@ public class JwtUtil {
     public static String getRole(String token) {
         return validateTokenAndGetClaims(token).get("role", String.class);
     }
+
+    public static String validateToken(String token) {
+        Claims claims = validateTokenAndGetClaims(token);
+        return claims.get("username", String.class);
+    }
 }

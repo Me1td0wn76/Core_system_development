@@ -46,12 +46,12 @@ function Login() {
     try {
       const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
-<<<<<<< HEAD
+
       setUser({ username: form.username });
       navigate('/dashboard');
     } catch {
       setError('ログイン失敗');
-=======
+
       localStorage.setItem('username', res.data.username);
       setUserRole(res.data.role as 'admin' | 'staff');
       setUser({ username: res.data.username, role: res.data.role });
@@ -65,7 +65,7 @@ function Login() {
       } else {
         setError('ログイン失敗: サーバーエラーが発生しました');
       }
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba
+
     }
   };
 

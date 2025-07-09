@@ -32,7 +32,7 @@ public class AuthUtil {
                 adminUser.setUsername("root");
                 adminUser.setRole("admin");
                 adminUser.setEmail("admin@example.com");
-                adminUser.setActive(true);
+                adminUser.setActive(1);
                 return Optional.of(adminUser);
             }
 
@@ -56,6 +56,6 @@ public class AuthUtil {
      */
     public boolean isValidUser(String authHeader) {
         Optional<User> userOpt = getUserFromToken(authHeader);
-        return userOpt.isPresent() && userOpt.get().getActive();
+        return userOpt.isPresent() && userOpt.get().getActive() != null && userOpt.get().getActive() == 1;
     }
 }

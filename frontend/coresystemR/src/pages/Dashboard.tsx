@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { handleLogout, isAuthenticated, handleAuthError, getCurrentUserRole } from '../utils/auth';
+import { handleLogout, isAuthenticated, handleAuthError } from '../utils/auth';
 import { RoleBadge, PermissionButton } from '../components/PermissionGuard';
 
 const TABS = ['all', 'info', 'warning', 'error', 'success'] as const;
@@ -27,7 +27,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [tab, setTab] = useState<TabType>('all');
-  const [transactions, setTransactions] = useState<Transaction[]>([
+  const [transactions] = useState<Transaction[]>([
     { id: 1, detail: '売上登録', date: '2025-06-28 10:00', amount: '¥10,000' },
     { id: 2, detail: '在庫補充', date: '2025-06-28 11:00', amount: '¥5,000' }
   ]);

@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.coresystem.repository.InventoryRepository;
 import com.example.coresystem.repository.SalesRepository;
-import com.example.coresystem.repository.UsersRepository;
-import com.example.coresystem.util.JwtUtil;
+import com.example.coresystem.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api")
@@ -24,31 +23,28 @@ public class SummaryController {
     private InventoryRepository inventoryRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/summary")
     public Map<String, Object> getSummary() {
         Map<String, Object> summary = new HashMap<>();
-        summary.put("username", "guest");
-        summary.put("sales", 123456);
-        summary.put("inventory", 320);
-        summary.put("customers", 42);
-        summary.put("username", username);
 
         // 実際のデータベースからデータを取得
         try {
             Double totalSales = salesRepository.getTotalSales();
             Long totalStock = inventoryRepository.getTotalStock();
-            Long customerCount = usersRepository.getUsersCount();
+            Long customerCount = userRepository.count(); // UserRepositoryのcountメソッドを使用
 
             summary.put("sales", totalSales != null ? totalSales.intValue() : 0);
             summary.put("inventory", totalStock != null ? totalStock.intValue() : 0);
             summary.put("customers", customerCount != null ? customerCount.intValue() : 0);
+            summary.put("username", "guest");
         } catch (Exception e) {
             // データベース接続エラーの場合はダミーデータを使用
             summary.put("sales", 123456);
             summary.put("inventory", 320);
             summary.put("customers", 42);
+            summary.put("username", "guest");
         }
 
         return summary;

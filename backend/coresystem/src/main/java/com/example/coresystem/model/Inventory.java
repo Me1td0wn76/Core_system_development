@@ -1,9 +1,6 @@
 package com.example.coresystem.model;
 
-<<<<<<< HEAD
-=======
 import jakarta.persistence.Column;
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,30 +14,19 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
-    private String name;
-
-    private Integer stock;
-
-    // --- ここから追加 ---
-=======
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "stock")
     private Integer stock;
 
-    @Column(name = "price")
-    private Double price;
-
     // コンストラクタ
     public Inventory() {
     }
 
-    public Inventory(String name, Integer stock, Double price) {
+    public Inventory(String name, Integer stock) {
         this.name = name;
         this.stock = stock;
-        this.price = price;
     }
 
     // Getter and Setter
@@ -60,7 +46,6 @@ public class Inventory {
         this.name = name;
     }
 
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba
     public Integer getStock() {
         return stock;
     }
@@ -68,19 +53,4 @@ public class Inventory {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
-<<<<<<< HEAD
-    // --- ここまで追加 ---
-
-    // 他のgetter/setterも必要に応じて追加
 }
-=======
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-}
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba

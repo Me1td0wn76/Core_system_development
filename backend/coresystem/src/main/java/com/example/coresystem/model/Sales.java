@@ -2,10 +2,7 @@ package com.example.coresystem.model;
 
 import java.time.LocalDateTime;
 
-<<<<<<< HEAD
-=======
 import jakarta.persistence.Column;
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,21 +16,17 @@ public class Sales {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
+    @Column(name = "sales_date")
     private LocalDateTime salesDate;
-    private Double amount;
 
-    // getter/setter
-}
-=======
+    @Column(name = "sale_date")
+    private LocalDateTime saleDate;
+
     @Column(name = "amount")
     private Double amount;
 
     @Column(name = "profit")
     private Double profit;
-
-    @Column(name = "sale_date")
-    private LocalDateTime saleDate;
 
     @Column(name = "product_name")
     private String productName;
@@ -42,11 +35,9 @@ public class Sales {
     public Sales() {
     }
 
-    public Sales(Double amount, Double profit, LocalDateTime saleDate, String productName) {
+    public Sales(LocalDateTime salesDate, Double amount) {
+        this.salesDate = salesDate;
         this.amount = amount;
-        this.profit = profit;
-        this.saleDate = saleDate;
-        this.productName = productName;
     }
 
     // Getter and Setter
@@ -56,6 +47,22 @@ public class Sales {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getSalesDate() {
+        return salesDate;
+    }
+
+    public void setSalesDate(LocalDateTime salesDate) {
+        this.salesDate = salesDate;
+    }
+
+    public LocalDateTime getSaleDate() {
+        return saleDate;
+    }
+
+    public void setSaleDate(LocalDateTime saleDate) {
+        this.saleDate = saleDate;
     }
 
     public Double getAmount() {
@@ -74,14 +81,6 @@ public class Sales {
         this.profit = profit;
     }
 
-    public LocalDateTime getSaleDate() {
-        return saleDate;
-    }
-
-    public void setSaleDate(LocalDateTime saleDate) {
-        this.saleDate = saleDate;
-    }
-
     public String getProductName() {
         return productName;
     }
@@ -90,4 +89,3 @@ public class Sales {
         this.productName = productName;
     }
 }
->>>>>>> 4532de6fabd95f9f9a4655748dc65bed7b0d75ba
