@@ -19,6 +19,8 @@ type Transaction = {
   amount: string;
 };
 
+
+
 function Dashboard() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);

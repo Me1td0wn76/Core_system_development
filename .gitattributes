@@ -1,0 +1,59 @@
+# テキストファイルの改行コード統一
+* text=auto
+
+# Shell scripts
+*.sh text eol=lf
+mvnw text eol=lf
+
+# Windows batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Java/Spring Boot関連
+*.java text
+*.properties text
+*.xml text
+*.yml text
+*.yaml text
+*.sql text
+
+# JavaScript/TypeScript/React関連
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.json text
+*.css text
+*.scss text
+*.sass text
+*.html text
+*.md text
+
+# 設定ファイル
+*.config text
+*.conf text
+Dockerfile text
+.gitignore text
+.gitattributes text
+
+# バイナリファイル
+*.jar binary
+*.war binary
+*.ear binary
+*.class binary
+*.so binary
+*.dll binary
+*.exe binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
+# LFS（Large File Storage）対象（必要に応じて）
+# *.jar filter=lfs diff=lfs merge=lfs -text
+# *.war filter=lfs diff=lfs merge=lfs -text

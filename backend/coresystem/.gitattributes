@@ -1,2 +1,15 @@
-/mvnw text eol=lf
+# Shell scripts (Unix/Linux)
+mvnw text eol=lf
+*.sh text eol=lf
+
+# Windows batch files
 *.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Java files
+*.java text
+*.properties text
+*.xml text
+*.yml text
+*.yaml text
+*.sql text

@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.cache
 
 # 秘密情報・認証情報（絶対にGitHubに上げてはならないもの）
 .env
@@ -37,3 +38,22 @@ config/*.env
 *.njsproj
 *.sln
 *.sw?
+
+# Testing
+coverage/
+.nyc_output/
+.coverage
+
+# TypeScript
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# パッケージマネージャー
+.pnpm-store/
+.yarn/
+.npm/
+
+# Hot reload
+.cache/

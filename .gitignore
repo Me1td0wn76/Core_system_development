@@ -15,12 +15,36 @@ application-local.properties
 application-*.yml
 application-*.yaml
 
+# データベース関連
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+data/
+db-data/
+mysql-data/
+postgres-data/
+
+# セキュリティ関連
+jwt.secret
+*.token
+auth.config
+security.properties
+
 # OSごとの不要ファイル
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
 
 # ログ・一時ファイル
 *.log
+logs/
+*.tmp
+*.temp
+*.cache
 
 # IDE・エディタ関連
 .idea/
@@ -33,12 +57,21 @@ Thumbs.db
 .classpath
 .project
 .sts4-cache
+.metadata/
+.recommenders/
 
 # バイナリ・ビルド成果物（全体）
 /dist/
 /build/
 /out/
 /target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
 
 # Node.js/React関連
 node_modules/
@@ -47,9 +80,24 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-store/
+.yarn/
+.npm/
+.eslintcache
+.nyc_output/
+
+# Docker関連
+docker-compose.override.yml
+*.dockerfile.local
+.dockerignore.local
 
 # Maven Wrapper
 .mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot関連
+*.pid
+spring.log
+application.pid
 
 # NetBeans
 /nbproject/private/
@@ -61,8 +109,19 @@ lerna-debug.log*
 # テストカバレッジやレポート
 /coverage/
 jacoco.exec
+*.lcov
+.nyc_output/
+coverage-final.json
+
+# バックアップファイル
+*.bak
+*.backup
+*.orig
 
 # その他
 HELP.md
 springBeans
 .apt_generated
+*.pid
+*.seed
+*.pid.lock

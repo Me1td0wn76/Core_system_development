@@ -29,4 +29,8 @@ public class JwtUtil {
     public static String getUsername(String token) {
         return validateTokenAndGetClaims(token).get("username", String.class);
     }
+
+    public static String getRole(String token) {
+        return validateTokenAndGetClaims(token).get("role", String.class);
+    }
 }
