@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 type Order = {
@@ -9,41 +10,86 @@ type Order = {
   date: string;
 };
 
-const dummyOrders: Order[] = [
-  { id: 1, product: 'りんご', quantity: 2, status: '未発送', date: '2025-06-28' },
-  { id: 2, product: 'バナナ', quantity: 1, status: '発送済み', date: '2025-06-27' },
-];
-
 function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(dummyOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [product, setProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
 
-  const handleAddOrder = () => {
+  // APIから注文一覧を取得
+  useEffect(() => {
+    axios.get<Order[]>('http://localhost:8080/api/orders')
+      .then(res => {
+        setOrders(
+          res.data.map((o) => ({
+            id: o.id,
+            product: o.product,
+            quantity: o.quantity,
+            status: o.status === '発送済み' ? '発送済み' : '未発送',
+            date: o.date ? o.date.replace('T', ' ').slice(0, 10) : ''
+          }))
+        );
+      })
+      .catch(() => setOrders([]));
+  }, []);
+
+  // 新規注文追加
+  const handleAddOrder = async () => {
     if (!product) return;
-    setOrders([
-      ...orders,
-      {
-        id: orders.length + 1,
-        product,
-        quantity,
-        status: '未発送',
-        date: new Date().toISOString().slice(0, 10),
-      },
-    ]);
-    setProduct('');
-    setQuantity(1);
+    const newOrder = {
+      product,
+      quantity,
+      status: '未発送' as const,
+      date: new Date().toISOString(),
+    };
+    try {
+      const res = await axios.post<Order>('http://localhost:8080/api/orders', newOrder);
+      const o = res.data;
+      setOrders([
+        ...orders,
+        {
+          id: o.id,
+          product: o.product,
+          quantity: o.quantity,
+          status: o.status === '発送済み' ? '発送済み' : '未発送',
+          date: o.date ? o.date.replace('T', ' ').slice(0, 10) : ''
+        }
+      ]);
+      setProduct('');
+      setQuantity(1);
+    } catch {
+      // エラー処理
+    }
   };
 
-  const handleStatusChange = (id: number) => {
-    setOrders(orders =>
-      orders.map(order =>
-        order.id === id
-          ? { ...order, status: order.status === '未発送' ? '発送済み' : '未発送' }
-          : order
-      )
-    );
+  // 注文ステータス変更
+  const handleStatusChange = async (id: number) => {
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+    const updated: Order = {
+      ...order,
+      status: order.status === '未発送' ? '発送済み' : '未発送',
+      date: new Date(order.date).toISOString() // LocalDateTime互換で送信
+    };
+    try {
+      await axios.put<Order>(`http://localhost:8080/api/orders/${id}`, updated);
+      setOrders(orders.map(o =>
+        o.id === id ? { ...updated } : o
+      ));
+    } catch {
+      // エラー処理
+    }
+  };
+
+  // 注文削除
+  const handleDeleteOrder = async (id: number) => {
+    if (!window.confirm('この注文を削除しますか？')) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/orders/${id}`);
+      setOrders(orders.filter(o => o.id !== id));
+    } catch {
+      // エラー処理
+    }
   };
 
   return (
@@ -115,10 +161,25 @@ function OrdersPage() {
                     background: '#8884d8',
                     color: '#fff',
                     fontWeight: 'bold',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    marginRight: 8
                   }}
                 >
                   {order.status === '未発送' ? '発送済みにする' : '未発送に戻す'}
+                </button>
+                <button
+                  onClick={() => handleDeleteOrder(order.id)}
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '4px',
+                    border: 'none',
+                    background: '#f44336',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  削除
                 </button>
               </td>
             </tr>

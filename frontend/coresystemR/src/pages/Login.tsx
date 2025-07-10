@@ -43,19 +43,18 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    // 入力値の前後の空白を除去
+    const trimmedForm = {
+      username: form.username.trim(),
+      password: form.password?.trim() ?? ''
+    };
     try {
-      const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', form);
+      const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', trimmedForm);
       localStorage.setItem('token', res.data.token);
-
-      setUser({ username: form.username });
-      navigate('/dashboard');
-    } catch {
-      setError('ログイン失敗');
-
       localStorage.setItem('username', res.data.username);
       setUserRole(res.data.role as 'admin' | 'staff');
       setUser({ username: res.data.username, role: res.data.role });
-      navigate('/dashboard'); // ログイン成功時にダッシュボードへ遷移
+      navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err);
       if (err.response?.status === 401) {
@@ -65,17 +64,17 @@ function Login() {
       } else {
         setError('ログイン失敗: サーバーエラーが発生しました');
       }
-
     }
   };
 
   // ワンクリックログイン用の関数
   const quickLogin = (username: string, password: string) => {
     setForm({ username, password });
-    // フォームを設定した後、ログインを実行
     setTimeout(async () => {
       try {
-        const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', { username, password });
+        // 入力値の前後の空白を除去
+        const trimmed = { username: username.trim(), password: password.trim() };
+        const res = await axios.post<{ token: string; username: string; role: string }>('http://localhost:8080/api/auth/login', trimmed);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('username', res.data.username);
         setUserRole(res.data.role as 'admin' | 'staff');

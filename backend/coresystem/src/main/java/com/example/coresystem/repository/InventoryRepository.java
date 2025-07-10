@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.coresystem.model.Inventory;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
-    @Query("SELECT COALESCE(SUM(i.quantity), 0) FROM Inventory i")
+    @Query("SELECT COALESCE(SUM(i.stock), 0) FROM Inventory i")
     Long getTotalStock();
 }

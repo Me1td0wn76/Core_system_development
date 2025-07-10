@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { handleAuthError } from '../utils/auth';
 
 type History = {
   id: number;
@@ -8,19 +10,49 @@ type History = {
   detail: string;
 };
 
-const dummyHistory: History[] = [
-  { id: 1, date: '2025-06-28 10:00', user: '山田太郎', detail: 'りんごを注文' },
-  { id: 2, date: '2025-06-28 10:05', user: '佐藤花子', detail: 'バナナを補充' },
-  { id: 3, date: '2025-06-28 11:00', user: '山田太郎', detail: 'みかんを注文' },
-  { id: 4, date: '2025-06-28 12:00', user: '鈴木一郎', detail: 'ぶどうを補充' },
-];
-
 function HistoryPage() {
-  const [history] = useState<History[]>(dummyHistory);
+  const [history, setHistory] = useState<History[]>([]);
   const [sortKey, setSortKey] = useState<'date' | 'user' | 'detail'>('date');
   const [sortAsc, setSortAsc] = useState(true);
   const [filter, setFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [userRole, setUserRole] = useState<'admin' | 'staff' | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // ロール取得
+    const role = localStorage.getItem('userRole') as 'admin' | 'staff' | null;
+    setUserRole(role);
+    // トークン取得
+    const token = localStorage.getItem('token');
+    if (!token) {
+      handleAuthError(navigate);
+      return;
+    }
+    axios.get('http://localhost:8080/api/sales/list', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        setHistory(
+          (res.data as any[]).map((s, idx) => ({
+            id: s.id ?? idx,
+            date: s.saleDate ? s.saleDate.replace('T', ' ').slice(0, 16) : '',
+            user: s.username || s.user || '不明',
+            detail: s.productName ? `${s.productName} を${s.amount ? s.amount + '個 ' : ''}操作` : s.detail || '操作',
+          }))
+        );
+        setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 401) {
+          handleAuthError(navigate);
+        } else {
+          setError('履歴データの取得に失敗しました');
+        }
+        setLoading(false);
+      });
+  }, [navigate]);
 
   const sorted = [...history]
     .filter(h => h.user.includes(filter) || h.detail.includes(filter))
@@ -31,6 +63,9 @@ function HistoryPage() {
       if (aVal > bVal) return sortAsc ? 1 : -1;
       return 0;
     });
+
+  if (loading) return <div style={{ padding: 32 }}>読み込み中...</div>;
+  if (error) return <div style={{ padding: 32, color: 'red' }}>{error}</div>;
 
   return (
     <div style={{ padding: 32, maxWidth: 800, margin: '0 auto' }}>
@@ -81,6 +116,7 @@ function HistoryPage() {
             >
               内容 {sortKey === 'detail' ? (sortAsc ? '▲' : '▼') : ''}
             </th>
+            {userRole === 'admin' && <th>編集</th>}
           </tr>
         </thead>
         <tbody>
@@ -89,6 +125,7 @@ function HistoryPage() {
               <td>{h.date}</td>
               <td>{h.user}</td>
               <td>{h.detail}</td>
+              {userRole === 'admin' && <td><button disabled>編集</button></td>}
             </tr>
           ))}
         </tbody>
